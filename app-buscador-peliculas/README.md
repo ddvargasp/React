@@ -37,7 +37,7 @@ La aplicación muestra una lista de tarjetas de películas coincidentes según l
 ### Guía de utilización
 Clona este repositorio en tu máquina local.
 
-Instale dependencias usando npm o hilo.
+Instale dependencias usando npm o yarn.
 
 Ejecute la aplicación usando npm start o Yarn Start.
 
