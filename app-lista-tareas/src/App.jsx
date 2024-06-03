@@ -1,63 +1,46 @@
-import React, { useEffect, useState } from 'react'
-import { TaskBanner } from "./components/TaskBanner.jsx";
-import { TaskCreator } from "./components/TaskCreator";
-import { VisibilityControl } from "./components/VisibilityControl";
-import { TaskTable } from "./components/TaskTable";
-import { Container } from "./components/Container.jsx";
+import React from 'react'
+import './App.css';
+import { TodoAdd } from './components/TodoAdd';
+import { TodoList } from './components/TodoList';
+import { useTodo } from './hooks/useTodo';
 
 export const App = () => {
 
-  const [userName, setUserName] = useState("Fazt");
-  const [taskItems, setTaskItems] = useState([]);
-  const [showCompleted, setshowCompleted] = useState(false);
-
-  useEffect(() => {
-    let data = localStorage.getItem("tasks");
-    if (data) {
-      setTaskItems(JSON.parse(data));
-    }
-    setUserName("fazt");
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(taskItems));
-  }, [taskItems]);
-
-  const createNewTask = (taskName) => {
-    if (!taskItems.find((t) => t.name === taskName))
-      setTaskItems([...taskItems, { name: taskName, done: false }]);
-  };
-
-  const toggleTask = (task) =>
-    setTaskItems(
-      taskItems.map((t) => (t.name === task.name ? { ...t, done: !t.done } : t))
-    );
-
-  const cleanTasks = () => {
-    setTaskItems(taskItems.filter((task) => !task.done));
-    setshowCompleted(false);
-  };
+  const {
+		todos,
+		todosCount,
+		pendingTodosCount,
+		handleNewTodo,
+		handleDeleteTodo,
+		handleCompleteTodo,
+		handleUpdateTodo,
+	} = useTodo();
 
   return (
-    <main className="bg-dark vh-100 text-white">
-      <TaskBanner userName={userName} taskItems={taskItems} />
-      <Container>
-        <TaskCreator createNewTask={createNewTask} />
-        <TaskTable tasks={taskItems} toggleTask={toggleTask} />
-        <VisibilityControl
-          description="Completed Tasks"
-          isChecked={showCompleted}
-          callback={(checked) => setshowCompleted(checked)}
-          cleanTasks={cleanTasks}
-        />
-        {showCompleted && (
-          <TaskTable
-            tasks={taskItems}
-            toggleTask={toggleTask}
-            showCompleted={showCompleted}
-          />
-        )}
-      </Container>
-    </main>
-  );
+    <>
+			<div className='card-to-do'>
+				<h1>Lista de tareas</h1>
+				<div className='counter-todos'>
+					<h3>
+						N° Tareas: <span>{todosCount}</span>
+					</h3>
+					<h3>
+						Pendientes: <span>{pendingTodosCount}</span>
+					</h3>
+				</div>
+
+				<div className='add-todo'>
+					<h3>Agregar Tarea</h3>
+					<TodoAdd handleNewTodo={handleNewTodo} />
+				</div>
+
+				<TodoList
+					todos={todos}
+					handleUpdateTodo={handleUpdateTodo}
+					handleDeleteTodo={handleDeleteTodo}
+					handleCompleteTodo={handleCompleteTodo}
+				/>
+			</div>
+		</>
+  )
 }
